@@ -10,6 +10,7 @@ public class BasicFunctionality {
     public static void main(String[] args) throws IOException {
         File file = new File("C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\ProDec\\SyllabusScanner\\SylPDF\\MTH3111.pdf");
         String test = readPDF(file);
+        System.out.println(test.indexOf("and"));
     }
 
     static String readPDF(File file) throws IOException {
