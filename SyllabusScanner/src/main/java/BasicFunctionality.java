@@ -15,6 +15,10 @@ public class BasicFunctionality {
         Map<String, List<Integer>> locations = getEventLocation(test.toLowerCase());
         for (String keys: locations.keySet()){
             System.out.println(keys);
+            for (int i:locations.get(keys)){
+                System.out.print(i+" ");
+            }
+            System.out.println();
         }
     }
 
@@ -43,8 +47,6 @@ public class BasicFunctionality {
         // OFFICE HOURS:
 
         // EXAMS:
-        // The problem here is that there are so many methods of saying exams: test, midterm, exam, final
-        // I'm not sure if the best method here is to just check each of them individually or not
         List<Integer> examList = new ArrayList<>();
         String[] testVariants = {"test", "exam", "midterm"};
         for (int i=0; i< testVariants.length; i++){
@@ -55,8 +57,42 @@ public class BasicFunctionality {
             }
         }
         result.put("Test",examList);
-
         // EXAMS:
+
+        // HOMEWORK:
+        List<Integer> homeworkList = new ArrayList<>();
+        String[] homeworkVariants = {"homework", "home work"};
+        for (int i=0; i< homeworkVariants.length; i++){
+            index = syllabus.indexOf(homeworkVariants[i]);
+            while (index>=0){
+                homeworkList.add(new Integer(index));
+
+                index = syllabus.indexOf(homeworkVariants[i],index+1);
+            }
+        }
+        result.put("Homework",homeworkList);
+        //HOMEWORK:
+
+        // PROJECTS:
+        List<Integer> projectList = new ArrayList<>();
+        String[] projectVariants = {"project"};
+        for (int i=0;i<projectVariants.length; i++){
+            index = syllabus.indexOf(projectVariants[i]);
+            while(index>=0){
+                projectList.add(new Integer(index));
+                index=syllabus.indexOf(projectVariants[i],index+1);
+            }
+        }
+        result.put("Project",projectList);
+
+
         return result;
+    }
+    // Now we need a method to get nearby dates, I'm thinking the closest date one line up or three lines down
+    static Map<String,String> getDates(Map<String,List<Integer>> input){
+        Map<String,String> eventNType = new HashMap<>();
+
+
+        return eventNType;
     }
 }
