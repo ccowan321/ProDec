@@ -14,7 +14,7 @@ public class BasicFunctionality {
         String test = readPDF(file);
         Map<String, List<Integer>> locations = getEventLocation(test.toLowerCase());
         for (String keys: locations.keySet()){
-            System.out.println(keys + " "+ locations.keySet() );
+            System.out.println(keys);
         }
     }
 
@@ -44,8 +44,17 @@ public class BasicFunctionality {
 
         // EXAMS:
         // The problem here is that there are so many methods of saying exams: test, midterm, exam, final
-        // I'm not sure if the best method here is to just check each of them individually or not 
-
+        // I'm not sure if the best method here is to just check each of them individually or not
+        List<Integer> examList = new ArrayList<>();
+        String[] testVariants = {"test", "exam", "midterm"};
+        for (int i=0; i< testVariants.length; i++){
+            index = syllabus.indexOf(testVariants[i]);
+            while(index>=0){
+                examList.add(new Integer(index));
+                index = syllabus.indexOf(testVariants[i], index+1);
+            }
+        }
+        result.put("Test",examList);
 
         // EXAMS:
         return result;
