@@ -30,9 +30,15 @@ public class BasicFunctionality {
             }
             System.out.println();
         }
-        findDateInString(" 6/7/13 Syllabus |  MTH 311 |  Summer I 2013");
+
         System.out.println(findDateInString(" 6/7/13 Syllabus |  MTH 311 |  Summer I 2013"));
         System.out.println(findDateInString("s on friday, july 5"));
+        System.out.println(findDateInString("12/5/2000"));
+        System.out.println(findDateInString("1/5/20"));
+        System.out.println(findDateInString("12/5"));
+        System.out.println(findDateInString("5/12"));
+        System.out.println(findDateInString("5/12/20"));
+
 
 
     }
@@ -189,38 +195,28 @@ public class BasicFunctionality {
                 // seems like I have to reconstruct the value of month so that the first letter is uppercase
                 return monthnum+1 + "/" + day;
             } catch (Exception e){
+
                 return "";
             }
 
         } else {
-            // No date was found, check for a date in the format "XX/XX(/XXXX)"
-            final String DATE_REGEX = "\\d{2}/\\d{2}(/\\d{4})?";
-            Pattern pattern2 = Pattern.compile(DATE_REGEX);
+            String datePattern2 = "\\s*\\d+/\\d+/\\d+\\s*";
+            Pattern pattern2 = Pattern.compile(datePattern2);
             Matcher matcher2 = pattern2.matcher(input);
-
-            if (matcher2.find()) {
+            if (matcher2.find()){
                 return matcher2.group();
-            } else {
-                final String Date_REGEX4 = "\\d{1}/\\d{1}(/\\d{4})?";
-                Pattern pattern5 = Pattern.compile(Date_REGEX4);
-                Matcher matcher5 = pattern5.matcher(input);
-
-                if (matcher5.find()){
-                    return matcher5.group();
+            } else{
+                String datePattern3 = "\\s*\\d*/\\d*\\s*";
+                Pattern pattern3 = Pattern.compile(datePattern3);
+                Matcher matcher3 = pattern3.matcher(input);
+                if (matcher3.find()){
+                    return matcher3.group();
                 } else{
-                    // Check for a date in the format "m/dd" or "m/d"
-                    final String DATE_REGEX3 = "\\d{1}/\\d{2}(/\\d{4})?"; // getting picked up here
-                    Pattern pattern4 = Pattern.compile(DATE_REGEX3);
-                    Matcher matcher4 = pattern4.matcher(input);
-
-                    if (matcher4.find()) {
-                        return matcher4.group();
-                    } else {
-                        return "";
-                    }
+                    return "";
                 }
-
             }
+
+
         }
     }
 }
