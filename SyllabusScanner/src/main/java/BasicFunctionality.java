@@ -21,15 +21,20 @@ public class BasicFunctionality {
         File file = new File("C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\ProDec\\SyllabusScanner\\SylPDF\\MTH3111.pdf");
         String test = readPDF(file);
         Map<String, List<Integer>> locations = getEventLocation(test.toLowerCase());
-        findDates(locations, test);
+        Map<String, List<String>> checkOutput = findDates(locations, test);
+        for (String key: checkOutput.keySet()){
+            List<String> indices = checkOutput.get(key);
+            System.out.println(key);
+            for (String s:indices){
+                System.out.println(s);
+            }
+            System.out.println();
+        }
+        findDateInString(" 6/7/13 Syllabus |  MTH 311 |  Summer I 2013");
+        System.out.println(findDateInString(" 6/7/13 Syllabus |  MTH 311 |  Summer I 2013"));
+        System.out.println(findDateInString("s on friday, july 5"));
 
-        String input = "today is friday, december 9";
-        String date = findDateInString(input);
-        System.out.println(date); // Outputs: "12/9"
 
-        input = "The date is 12/25";
-        date = findDateInString(input);
-        System.out.println(date); // Outputs: "12/25/2022"
     }
 
     static String readPDF(File file) throws IOException {
@@ -102,37 +107,54 @@ public class BasicFunctionality {
 
     // Now we need a method to get nearby dates, I'm thinking the closest date one line up or three lines down
     // have to think of all of the ways a date might be written: DayOfWeek, Month | Day/Month | Day/Month/Year
-    static void findDates(Map<String, List<Integer>> map, String input) {
+    static Map<String, List<String>> findDates(Map<String, List<Integer>> map, String input) throws ParseException {
+        Map<String, List<String>> eventDates= new HashMap<String, List<String>>();
 
         for (String key : map.keySet()) {
+            List<String> tempStrings = new ArrayList<>();
             List<Integer> indices = map.get(key);
             for (Integer index : indices) {
-//                int lineAboveIndex = index - input.substring(0, index).lastIndexOf('\n');
-//                String lineAbove = input.substring(lineAboveIndex, lineAboveIndex + input.substring(lineAboveIndex).indexOf('\n'));
 
-                // having trouble with getting the line above the index
+                int newlineIndex1 = input.lastIndexOf("\n", index);
+                int newlineIndex2 = input.indexOf("\n", index);
+                String line = input.substring(newlineIndex1, newlineIndex2);
+                line = line.toLowerCase();
+                System.out.println(findDateInString(line));
+                if(findDateInString(line).length()!=0){
+                    tempStrings.add(findDateInString(line));
+                    break;
+                }
+
                 try { // this is just for the first index as theres no way to check a line above if it doesn't exist
                     int lineAboveIndex2 = input.lastIndexOf("\n", index);
                     int lineAboveIndex1 = input.lastIndexOf("\n", lineAboveIndex2 - 1);
                     String lineAbove = input.substring(lineAboveIndex1, lineAboveIndex2);
+                    lineAbove = lineAbove.toLowerCase();
+                    //System.out.println(findDateInString(lineAbove));
+                    if (findDateInString(lineAbove).length()!=0){
+                        tempStrings.add(findDateInString(lineAbove));
+                        break;
+                    }
                 } catch (Exception e) {
 
                 }
                 try { // same thing again, line below could break so might as well wrap it since its existence isn't whats important its the scan on the relevant string
                     int lineBelowIndex = index + input.substring(index).indexOf('\n') + 1;
                     String lineBelow = input.substring(lineBelowIndex, lineBelowIndex + input.substring(lineBelowIndex).indexOf('\n'));
+                    lineBelow = lineBelow.toLowerCase();
+                    //System.out.println(findDateInString(lineBelow));
+                    System.out.println(lineBelow);
+                    if (findDateInString(lineBelow).length()!=0){
+                        tempStrings.add(findDateInString(lineBelow));
+                        break;
+                    }
                 } catch (Exception e) {
 
                 }
-
-
-                int newlineIndex1 = input.lastIndexOf("\n", index);
-                int newlineIndex2 = input.indexOf("\n", index);
-                String line = input.substring(newlineIndex1, newlineIndex2);
-
-
             }
+            eventDates.put(key, tempStrings);
         }
+        return eventDates;
     }
 
     public static String findDateInString(String input) throws ParseException {
@@ -158,7 +180,7 @@ public class BasicFunctionality {
             String day = parts[1].split(" ")[1];
             month = month.substring(0,1).toUpperCase() + month.substring(1);
 
-            
+
             try{ // have to put this try catch here, because the regex isn't 100 percent effective and may give bad values
                 Date date = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(month);
                 Calendar cal = Calendar.getInstance();
@@ -179,7 +201,25 @@ public class BasicFunctionality {
             if (matcher2.find()) {
                 return matcher2.group();
             } else {
-                return "";
+                final String Date_REGEX4 = "\\d{1}/\\d{1}(/\\d{4})?";
+                Pattern pattern5 = Pattern.compile(Date_REGEX4);
+                Matcher matcher5 = pattern5.matcher(input);
+
+                if (matcher5.find()){
+                    return matcher5.group();
+                } else{
+                    // Check for a date in the format "m/dd" or "m/d"
+                    final String DATE_REGEX3 = "\\d{1}/\\d{2}(/\\d{4})?"; // getting picked up here
+                    Pattern pattern4 = Pattern.compile(DATE_REGEX3);
+                    Matcher matcher4 = pattern4.matcher(input);
+
+                    if (matcher4.find()) {
+                        return matcher4.group();
+                    } else {
+                        return "";
+                    }
+                }
+
             }
         }
     }
