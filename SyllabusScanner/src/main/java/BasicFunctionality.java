@@ -3,21 +3,33 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 public class BasicFunctionality {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         File file = new File("C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\ProDec\\SyllabusScanner\\SylPDF\\MTH3111.pdf");
         String test = readPDF(file);
         Map<String, List<Integer>> locations = getEventLocation(test.toLowerCase());
         findDates(locations, test);
 
+        String input = "today is friday, december 9";
+        String date = findDateInString(input);
+        System.out.println(date); // Outputs: "12/9"
 
+        input = "The date is 12/25";
+        date = findDateInString(input);
+        System.out.println(date); // Outputs: "12/25/2022"
     }
 
     static String readPDF(File file) throws IOException {
@@ -103,8 +115,6 @@ public class BasicFunctionality {
                     int lineAboveIndex2 = input.lastIndexOf("\n", index);
                     int lineAboveIndex1 = input.lastIndexOf("\n", lineAboveIndex2 - 1);
                     String lineAbove = input.substring(lineAboveIndex1, lineAboveIndex2);
-                    System.out.println("LINE ABOVE: ");
-                    System.out.println(lineAbove);
                 } catch (Exception e) {
 
                 }
@@ -125,20 +135,52 @@ public class BasicFunctionality {
         }
     }
 
-    public static String findDateInString(String input) {
-        // Create a Pattern object to match the regular expression
-        final String DATE_REGEX = "\\d{2}/\\d{2}(/\\d{4})?";
-        Pattern pattern = Pattern.compile(DATE_REGEX);
+    public static String findDateInString(String input) throws ParseException {
+        // Define the date pattern that we are looking for
+        String datePattern = "\\b[a-z]{3,}, [a-z]{3,} \\d{1,2}\\b";
 
-        // Create a Matcher object to search the input string for matches to the regular expression
+        // Create a Pattern object
+        Pattern pattern = Pattern.compile(datePattern);
+
+        // Use the pattern to create a matcher object
         Matcher matcher = pattern.matcher(input);
 
-        // If a match is found, return the matched date in its original format
+        // Check if a match was found
         if (matcher.find()) {
-            return matcher.group();
-        }
+            // Get the matched string
+            String matched = matcher.group();
 
-        // If no match is found, return an empty string
-        return "";
+            // Split the matched string into its parts
+            String[] parts = matched.split(", ");
+
+            // Get the month and day parts
+            String month = parts[1].split(" ")[0];
+            String day = parts[1].split(" ")[1];
+            month = month.substring(0,1).toUpperCase() + month.substring(1);
+
+            
+            try{ // have to put this try catch here, because the regex isn't 100 percent effective and may give bad values
+                Date date = new SimpleDateFormat("MMM", Locale.ENGLISH).parse(month);
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+                int monthnum = cal.get(Calendar.MONTH);
+                // seems like I have to reconstruct the value of month so that the first letter is uppercase
+                return monthnum+1 + "/" + day;
+            } catch (Exception e){
+                return "";
+            }
+
+        } else {
+            // No date was found, check for a date in the format "XX/XX(/XXXX)"
+            final String DATE_REGEX = "\\d{2}/\\d{2}(/\\d{4})?";
+            Pattern pattern2 = Pattern.compile(DATE_REGEX);
+            Matcher matcher2 = pattern2.matcher(input);
+
+            if (matcher2.find()) {
+                return matcher2.group();
+            } else {
+                return "";
+            }
+        }
     }
 }
