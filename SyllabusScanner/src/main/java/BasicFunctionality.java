@@ -17,11 +17,23 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 public class BasicFunctionality {
+    //TODO: I believe the current issue is how the lines are obtained, I know it should be able to find any date given for
+    // the most part but it is not when I know it should be. Best route is probably to look into how the lines are taken because for a fact there should be one more date in test
+    // also need to add MWF notation
     public static void main(String[] args) throws IOException, ParseException {
         File file = new File("C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\ProDec\\SyllabusScanner\\SylPDF\\MTH3111.pdf");
         String test = readPDF(file);
         Map<String, List<Integer>> locations = getEventLocation(test.toLowerCase());
-        Map<String, List<String>> checkOutput = findDates(locations, test);
+        for (String key: locations.keySet()){
+            List<Integer> indices = locations.get(key);
+            System.out.println(key);
+            for (Integer i: indices){
+                System.out.print(i+" ");
+            }
+            System.out.println();
+        }
+
+        Map<String, List<String>> checkOutput = findDates(locations, test.toLowerCase());
         for (String key: checkOutput.keySet()){
             List<String> indices = checkOutput.get(key);
             System.out.println(key);
@@ -31,15 +43,16 @@ public class BasicFunctionality {
             System.out.println();
         }
 
-        System.out.println(findDateInString(" 6/7/13 Syllabus |  MTH 311 |  Summer I 2013"));
-        System.out.println(findDateInString("s on friday, july 5"));
-        System.out.println(findDateInString("12/5/2000"));
-        System.out.println(findDateInString("1/5/20"));
-        System.out.println(findDateInString("12/5"));
-        System.out.println(findDateInString("5/12"));
-        System.out.println(findDateInString("5/12/20"));
-        System.out.println(findDateInString("/"));
 
+//        System.out.println(findDateInString(" 6/7/13 Syllabus |  MTH 311 |  Summer I 2013"));
+//        System.out.println(findDateInString("s on friday, july 5"));
+//        System.out.println(findDateInString("12/5/2000"));
+//        System.out.println(findDateInString("1/5/20"));
+//        System.out.println(findDateInString("12/5"));
+//        System.out.println(findDateInString("5/12"));
+//        System.out.println(findDateInString("5/12/20"));
+//        System.out.println(findDateInString("/"));
+        // now I know that it is properly finding dates I have to assess why it isnt finding dates in the strings I've given the code
 
 
     }
@@ -116,7 +129,7 @@ public class BasicFunctionality {
     // have to think of all of the ways a date might be written: DayOfWeek, Month | Day/Month | Day/Month/Year
     static Map<String, List<String>> findDates(Map<String, List<Integer>> map, String input) throws ParseException {
         Map<String, List<String>> eventDates= new HashMap<String, List<String>>();
-
+        input = input.toLowerCase();
         for (String key : map.keySet()) {
             List<String> tempStrings = new ArrayList<>();
             List<Integer> indices = map.get(key);
@@ -126,7 +139,8 @@ public class BasicFunctionality {
                 int newlineIndex2 = input.indexOf("\n", index);
                 String line = input.substring(newlineIndex1, newlineIndex2);
                 line = line.toLowerCase();
-                System.out.println(findDateInString(line));
+                //System.out.println(findDateInString(line));
+                //System.out.println(line);
                 if(findDateInString(line).length()!=0){
                     tempStrings.add(findDateInString(line));
                     break;
@@ -150,7 +164,7 @@ public class BasicFunctionality {
                     String lineBelow = input.substring(lineBelowIndex, lineBelowIndex + input.substring(lineBelowIndex).indexOf('\n'));
                     lineBelow = lineBelow.toLowerCase();
                     //System.out.println(findDateInString(lineBelow));
-                    System.out.println(lineBelow);
+                    //System.out.println(lineBelow);
                     if (findDateInString(lineBelow).length()!=0){
                         tempStrings.add(findDateInString(lineBelow));
                         break;
