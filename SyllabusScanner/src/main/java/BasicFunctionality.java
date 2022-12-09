@@ -38,6 +38,7 @@ public class BasicFunctionality {
         System.out.println(findDateInString("12/5"));
         System.out.println(findDateInString("5/12"));
         System.out.println(findDateInString("5/12/20"));
+        System.out.println(findDateInString("/"));
 
 
 
@@ -165,6 +166,7 @@ public class BasicFunctionality {
 
     public static String findDateInString(String input) throws ParseException {
         // Define the date pattern that we are looking for
+
         String datePattern = "\\b[a-z]{3,}, [a-z]{3,} \\d{1,2}\\b";
 
         // Create a Pattern object
@@ -206,7 +208,7 @@ public class BasicFunctionality {
             if (matcher2.find()){
                 return matcher2.group();
             } else{
-                String datePattern3 = "\\s*\\d*/\\d*\\s*";
+                String datePattern3 = "\\s*\\d/\\d\\s*";
                 Pattern pattern3 = Pattern.compile(datePattern3);
                 Matcher matcher3 = pattern3.matcher(input);
                 if (matcher3.find()){
