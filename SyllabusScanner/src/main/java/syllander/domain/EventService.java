@@ -11,7 +11,11 @@ import java.util.List;
 public class EventService {
     private EventRepository repository;
 
-    public List<Event> generateEventList(String input) throws ParseException{ // dont really think there is much checking to do forthis script
+    public EventService(EventRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<Event> generateEventList(String input) throws ParseException{ // dont really think there is much checking to do for this script
         return repository.generateEventList(input);
     }
 }
