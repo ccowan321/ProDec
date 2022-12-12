@@ -17,9 +17,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 public class BasicFunctionality {
-    //TODO: I believe the current issue is how the lines are obtained, I know it should be able to find any date given for
-    // the most part but it is not when I know it should be. Best route is probably to look into how the lines are taken because for a fact there should be one more date in test
-    // also need to add MWF notation
+    //TODO: MWF notation, then break it down into object form
     public static void main(String[] args) throws IOException, ParseException {
         File file = new File("C:\\Users\\conno\\OneDrive\\Documents\\GitHub\\ProDec\\SyllabusScanner\\SylPDF\\MTH3111.pdf");
         String test = readPDF(file);
@@ -142,7 +140,7 @@ public class BasicFunctionality {
 
                 if(findDateInString(line).length()!=0){
                     tempStrings.add(findDateInString(line));
-                    break;
+
                 }
 
                 try { // this is just for the first index as theres no way to check a line above if it doesn't exist
@@ -150,19 +148,17 @@ public class BasicFunctionality {
                     int lineAboveIndex1 = input.lastIndexOf("\n", lineAboveIndex2 - 1);
                     String lineAbove = input.substring(lineAboveIndex1, lineAboveIndex2);
                     lineAbove = lineAbove.toLowerCase();
-                    //System.out.println(findDateInString(lineAbove));
+
                     if (findDateInString(lineAbove).length()!=0){
                         tempStrings.add(findDateInString(lineAbove));
                     }
                 } catch (Exception e) {
 
                 }
-                try { // same thing again, line below could break so might as well wrap it since its existence isn't whats important its the scan on the relevant string
+                try {
                     int lineBelowIndex = index + input.substring(index).indexOf('\n') + 1;
                     String lineBelow = input.substring(lineBelowIndex, lineBelowIndex + input.substring(lineBelowIndex).indexOf('\n'));
                     lineBelow = lineBelow.toLowerCase();
-                    //System.out.println(findDateInString(lineBelow));
-                    //System.out.println(lineBelow);
                     if (findDateInString(lineBelow).length()!=0){
                         tempStrings.add(findDateInString(lineBelow));
                     }
@@ -208,7 +204,6 @@ public class BasicFunctionality {
                 // seems like I have to reconstruct the value of month so that the first letter is uppercase
                 return monthnum+1 + "/" + day;
             } catch (Exception e){
-
                 return "";
             }
 
@@ -225,7 +220,7 @@ public class BasicFunctionality {
                 if (matcher3.find()){
                     return matcher3.group();
                 } else{
-                    return "";
+                        return "";
                 }
             }
 
