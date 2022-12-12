@@ -33,7 +33,7 @@ public class BasicFunctionality {
             System.out.println();
         }
 
-        Map<String, List<String>> checkOutput = findDates(locations, test.toLowerCase());
+        Map<String, List<String>> checkOutput = findDates(locations, test);
         for (String key: checkOutput.keySet()){
             List<String> indices = checkOutput.get(key);
             System.out.println(key);
@@ -135,12 +135,11 @@ public class BasicFunctionality {
             List<Integer> indices = map.get(key);
             for (Integer index : indices) {
 
-                int newlineIndex1 = input.lastIndexOf("\n", index);
-                int newlineIndex2 = input.indexOf("\n", index);
+                int newlineIndex1 = input.lastIndexOf("\n", index-1);
+                int newlineIndex2 = input.indexOf("\n", index+1);
                 String line = input.substring(newlineIndex1, newlineIndex2);
                 line = line.toLowerCase();
-                //System.out.println(findDateInString(line));
-                //System.out.println(line);
+
                 if(findDateInString(line).length()!=0){
                     tempStrings.add(findDateInString(line));
                     break;
@@ -154,7 +153,6 @@ public class BasicFunctionality {
                     //System.out.println(findDateInString(lineAbove));
                     if (findDateInString(lineAbove).length()!=0){
                         tempStrings.add(findDateInString(lineAbove));
-                        break;
                     }
                 } catch (Exception e) {
 
@@ -167,7 +165,6 @@ public class BasicFunctionality {
                     //System.out.println(lineBelow);
                     if (findDateInString(lineBelow).length()!=0){
                         tempStrings.add(findDateInString(lineBelow));
-                        break;
                     }
                 } catch (Exception e) {
 
