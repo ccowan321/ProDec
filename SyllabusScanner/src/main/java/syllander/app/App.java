@@ -2,10 +2,15 @@ package syllander.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import syllander.controllers.EventController;
+import syllander.data.EventRepository;
+import syllander.domain.EventService;
 
 import java.text.ParseException;
 
 @SpringBootApplication
+@ComponentScan(basePackageClasses = {EventController.class, EventService.class, EventRepository.class})
 public class App {
     public static void main(String[] args){
         SpringApplication.run(App.class,args);
