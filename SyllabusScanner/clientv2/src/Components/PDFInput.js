@@ -17,8 +17,6 @@ function PDFInput() {
     fetch('http://localhost:8080/api', init)
     .then(resp => {
       if (resp.status===201 || resp.status === 200){
-        console.log("this worked"); 
-        console.log(typeof pdfText); 
         return resp.json(); 
       } 
       console.log(pdfText); 
@@ -79,7 +77,19 @@ function PDFInput() {
     <div>
       <input type="file" accept="application/pdf" onChange={handlePdfChange} />
       {file && <button onClick={() => handleExtractClick(pdfText)}>Extract Dates</button>} 
+      {responseBody && 
+      <div style={{ height: '300px', overflow: 'auto' }}>
+      {responseBody.map((item, index) => (
+        <div key={index}  style={{ border: '1px solid black', margin: '10px' }}>
+          <p><strong>Event Name:</strong> <input type="text" value={item.eventName}></input></p>
+          <p><strong>Date:</strong> <input type="date" value={item.localDate}></input></p>
+      
+        </div>
+      ))}
+    </div>}
+
     </div>
+
   );
 }
 export default PDFInput; 
