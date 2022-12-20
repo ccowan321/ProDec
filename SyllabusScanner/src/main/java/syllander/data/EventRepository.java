@@ -62,16 +62,21 @@ public class EventRepository {
             List<String> tempStrings = new ArrayList<>();
             List<Integer> indices = map.get(key);
             for (Integer index : indices) {
+                try{
+                    int newlineIndex1 = input.lastIndexOf("\n", index-1);
+                    int newlineIndex2 = input.indexOf("\n", index+1);
+                    String line = input.substring(newlineIndex1, newlineIndex2);
+                    line = line.toLowerCase();
 
-                int newlineIndex1 = input.lastIndexOf("\n", index-1);
-                int newlineIndex2 = input.indexOf("\n", index+1);
-                String line = input.substring(newlineIndex1, newlineIndex2);
-                line = line.toLowerCase();
-
-                if(findDateInString(line).length()!=0){
-                    //tempStrings.add(findDateInString(line));
-                    result.add(new Event(key, parseDate(findDateInString(line)))); // have to convert the string found into a local date
+                    if(findDateInString(line).length()!=0){
+                        //tempStrings.add(findDateInString(line));
+                        result.add(new Event(key, parseDate(findDateInString(line)))); // have to convert the string found into a local date
+                    }
                 }
+                catch (Exception e){
+
+                }
+
 
                 try { // this is just for the first index as theres no way to check a line above if it doesn't exist
                     int lineAboveIndex2 = input.lastIndexOf("\n", index);

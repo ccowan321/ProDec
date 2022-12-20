@@ -3,9 +3,42 @@ import * as pdfjs from 'pdfjs-dist';
 
 function PDFInput() {
   const [pdfText, setPdfText] = useState('');
+  const [file, setFile] = useState(null); 
+  const [responseBody, setResponseBody] = useState(null);
+  
+  const handleExtractClick = (pdfText) => {
+    const init = {
+      method: 'POST',
+      headers:{
+        'Content-Type': 'application/json'
+      }, 
+      body: pdfText
+    }
+    fetch('http://localhost:8080/api', init)
+    .then(resp => {
+      if (resp.status===201 || resp.status === 200){
+        console.log("this worked"); 
+        console.log(typeof pdfText); 
+        return resp.json(); 
+      } 
+      console.log(pdfText); 
+      return Promise.reject('Something terrible has gone wrong.  Oh god the humanity!!!');
+    })
+    .then(response => {
+      console.log(response);
+      setResponseBody(response);
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  
+  }
 
   const handlePdfChange = (event) => {
     const file = event.target.files[0];
+    setFile(file); 
+    console.log(file); 
+    
     const reader = new FileReader();
 
     reader.onload = (e) => {
@@ -17,7 +50,7 @@ function PDFInput() {
         const getPageText = (pageNum) => {
           return doc.getPage(pageNum).then((page) => {
             return page.getTextContent().then((textContent) => {
-              return textContent.items.map((item) => item.str).join(' ');
+              return textContent.items.map((item) => item.str).join('\n');
             });
           });
         };
@@ -27,14 +60,14 @@ function PDFInput() {
             return;
           }
           return getPageText(pageNum).then((pageText) => {
-            text += `${pageText}\n`;
+            text += pageText;
             return getAllPageText(pageNum + 1);
           });
         };
 
         return getAllPageText(1).then(() => {
           setPdfText(text);
-          console.log(text); 
+          console.log(typeof text); 
         });
       });
     };
@@ -45,7 +78,7 @@ function PDFInput() {
   return (
     <div>
       <input type="file" accept="application/pdf" onChange={handlePdfChange} />
-      <pre>{pdfText}</pre>
+      {file && <button onClick={() => handleExtractClick(pdfText)}>Extract Dates</button>} 
     </div>
   );
 }

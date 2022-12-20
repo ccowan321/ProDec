@@ -22,7 +22,7 @@ public class EventController {
 
     @PostMapping
     public List<Event> generateEventList(@RequestBody String data) throws ParseException {
-        System.out.println(service.generateEventList("\n test 12/24/20 \n").size());
+        System.out.println(data);
         return service.generateEventList(data);
     }
 
