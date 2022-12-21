@@ -19,7 +19,31 @@ public class EventRepository {
     public List<Event> generateEventList(String input) throws ParseException {
         Map<String, List<Integer>> locations = getEventLocation(input);
         List<Event> result = findDates(locations,input);
-        return result;
+        // need to filter out repeat events, the way the search method works it is overwhelmingly likely  dates will become repeated
+        // could just check to see if the index of the date was previously used, but runtime won't suffer and the conditionals would likely become over complicated
+        // remove null dates
+        result.removeIf(obj -> {
+            if (obj.getLocalDate()==null){
+                return true;
+            } else {
+                return false;
+            }
+        });
+        // remove duplicates
+        List<Event> filtered = new ArrayList<>();
+        for (Event e: result){
+            boolean found = false;
+            for (Event other: filtered){
+                if (e.getEventName().equals(other.getEventName()) && e.getLocalDate().equals(other.getLocalDate())){
+                    found = true;
+                    break;
+                }
+            }
+            if (!found){
+                filtered.add(e);
+            }
+        }
+        return filtered;
     }
     public static LocalDate parseDate(String s){
     LocalDate temp;

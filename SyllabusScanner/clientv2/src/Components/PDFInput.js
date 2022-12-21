@@ -34,6 +34,7 @@ function PDFInput() {
 
   const handlePdfChange = (event) => {
     const file = event.target.files[0];
+    setResponseBody(null);
     setFile(file); 
     console.log(file); 
     
@@ -80,7 +81,7 @@ function PDFInput() {
       {responseBody && 
       <div style={{ height: '300px', overflow: 'auto' }}>
       {responseBody.map((item, index) => (
-        <div key={index}  style={{ border: '1px solid black', margin: '10px' }}>
+        <div key={index}  style={{ border: '5px solid black', margin: '10px' }}>
           <p><strong>Event Name:</strong> <input type="text" value={item.eventName}></input></p>
           <p><strong>Date:</strong> <input type="date" value={item.localDate}></input></p>
       
