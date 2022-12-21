@@ -31,6 +31,31 @@ function PDFInput() {
     });
   
   }
+  const handleEventNameChange = (event, index) => {
+    const newValue = event.target.value;
+    setResponseBody((prevResponseBody) => {
+      const newResponseBody = [...prevResponseBody];
+      newResponseBody[index] = {
+        ...newResponseBody[index],
+        eventName: newValue,
+      };
+      console.log(newResponseBody); 
+      return newResponseBody;
+    });
+  };
+  
+  const handleDateChange = (event, index) => {
+    const newValue = event.target.value;
+    setResponseBody((prevResponseBody) => {
+      const newResponseBody = [...prevResponseBody];
+      newResponseBody[index] = {
+        ...newResponseBody[index],
+        localDate: newValue,
+      };
+      console.log(newResponseBody); 
+      return newResponseBody;
+    });
+  };
 
   const handlePdfChange = (event) => {
     const file = event.target.files[0];
@@ -82,8 +107,8 @@ function PDFInput() {
       <div style={{ height: '300px', overflow: 'auto' }}>
       {responseBody.map((item, index) => (
         <div key={index}  style={{ border: '5px solid black', margin: '10px' }}>
-          <p><strong>Event Name:</strong> <input type="text" value={item.eventName}></input></p>
-          <p><strong>Date:</strong> <input type="date" value={item.localDate}></input></p>
+          <p><strong>Event Name:</strong> <input type="text" value={item.eventName}  onChange={(event) => handleEventNameChange(event, index)}></input></p>
+          <p><strong>Date:</strong> <input type="date" value={item.localDate} onChange={(event) => handleDateChange(event, index)}></input></p>
       
         </div>
       ))}
