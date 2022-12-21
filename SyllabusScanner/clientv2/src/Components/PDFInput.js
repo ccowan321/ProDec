@@ -57,6 +57,25 @@ function PDFInput() {
     });
   };
 
+  const onAddClick = () => {
+      setResponseBody((prevResponseBody) => {
+        const newResponseBody = [...prevResponseBody];
+        newResponseBody[newResponseBody.length]={
+          eventName:"",
+          localDate:null
+        }
+        return newResponseBody; 
+      })
+  }
+
+  const handleRemoveClick = (index) => {
+    setResponseBody((prevResponseBody) => {
+      const newResponseBody = [...prevResponseBody];
+      newResponseBody.splice(index, 1);
+      return newResponseBody;
+    });
+  };
+  
   const handlePdfChange = (event) => {
     const file = event.target.files[0];
     setResponseBody(null);
@@ -96,6 +115,7 @@ function PDFInput() {
       });
     };
 
+
     reader.readAsArrayBuffer(file);
   };
 
@@ -109,11 +129,13 @@ function PDFInput() {
         <div key={index}  style={{ border: '5px solid black', margin: '10px' }}>
           <p><strong>Event Name:</strong> <input type="text" value={item.eventName}  onChange={(event) => handleEventNameChange(event, index)}></input></p>
           <p><strong>Date:</strong> <input type="date" value={item.localDate} onChange={(event) => handleDateChange(event, index)}></input></p>
-      
+          <p><button onClick={() => handleRemoveClick(index)}>Remove</button></p>
         </div>
       ))}
-    </div>}
-
+      
+    </div>
+    }
+    {responseBody &&  <button onClick={onAddClick}>Add your own date</button>}
     </div>
 
   );
